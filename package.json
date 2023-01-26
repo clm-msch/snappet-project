@@ -1,0 +1,25 @@
+{
+  "name": "snappet-project",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/clm-msch/snappet-project.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/clm-msch/snappet-project/issues"
+  },
+  "homepage": "https://github.com/clm-msch/snappet-project#readme",
+  "dependencies": {
+    "express": "^4.18.2",
+    "nodemon": "^2.0.20",
+    "prisma": "^4.9.0"
+  }
+}
