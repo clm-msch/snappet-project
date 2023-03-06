@@ -10,39 +10,49 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique @db.VarChar(255)
-  password  String   @db.VarChar(255)
-  picture   String   @db.VarChar(255)
-  name      String   @unique @db.VarChar(255)
-  createdAt DateTime @default(now())
-  snippets  Snippet[]
+//create a model User
+
+model Users {
+  id         Int          @id @default(autoincrement())
+  email      String       @unique
+  password   String
+  image      String?
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+  snippets   Snippets[]
+  categories Categories[]
+  tags       Tags[]
 }
 
-model Snippet {
-  id        Int      @id @default(autoincrement())
-  title     String   @db.VarChar(255)
-  content   String   @db.Text
-  createdAt DateTime @default(now())
-  user      User     @relation(fields: [userId], references: [id])
-  userId    Int
-  category  Category @relation(fields: [categoryId], references: [id])
-  categoryId Int
-  tags      Tag[]
+//create a model snippets with id title content user_id
+
+model Snippets {
+  id          Int        @id @default(autoincrement())
+  title       String
+  content     String
+  user_id     Int
+  user        Users      @relation(fields: [user_id], references: [id])
+  category_id Int
+  category    Categories @relation(fields: [category_id], references: [id])
+  tags        Tags[]
 }
 
-model Category {
-  id        Int      @id @default(autoincrement())
-  name      String   @db.VarChar(255)
-  createdAt DateTime @default(now())
-  snippets  Snippet[]
+//create a model categories with id and title
+
+model Categories {
+  id       Int        @id @default(autoincrement())
+  title    String
+  snippets Snippets[]
+  user_id  Int
+  user     Users      @relation(fields: [user_id], references: [id])
 }
 
-model Tag {
-  id        Int      @id @default(autoincrement())
-  name      String   @db.VarChar(255)
-  createdAt DateTime @default(now())
-  snippets  Snippet[]
+//create a model tags with id and title
 
+model Tags {
+  id       Int        @id @default(autoincrement())
+  title    String
+  snippets Snippets[]
+  user_id  Int
+  user     Users      @relation(fields: [user_id], references: [id])
 }
