@@ -1,9 +1,8 @@
 import { app } from "app.js";
-
-// server.js
 const port = 3002;
 
-// run the server
+
+// lancement du serveur
 app.listen(port, () => {
     console.log(`App listening on port ${port}`);
 });

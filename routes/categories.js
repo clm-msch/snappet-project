@@ -1,86 +1,67 @@
-import * as dotenv from "dotenv";
-dotenv.config();
-
 import express from "express";
-
-import jwt from "jsonwebtoken";
-
-import createError from "http-errors";
-
 import { PrismaClient } from "@prisma/client";
-
-import bcrypt from "bcrypt";
-
 import CategoriesValidator from "../validators/CategoriesValidators.js";
-
 import { expressjwt } from "express-jwt";
+import dotenv from "dotenv";
+
+// Chargement des variables d'environnement
+dotenv.config();
 
 const prisma = new PrismaClient();
 
-// j'initialise un routeur
+// Initialisation du routeur
 const router = express.Router();
 
+// Authentification JWT
 const auth = expressjwt({
-  secret: process.env["JWT_KEY"],
+  secret: process.env.JWT_KEY,
   algorithms: ["HS256"],
 });
 
-//create categories with prisma
-
+// Création de catégories avec Prisma
 router.post("/categories", auth, async (req, res, next) => {
-  let categoriesData;
   try {
-    categoriesData = CategoriesValidator.parse(req.body);
+    const categoriesData = CategoriesValidator.parse(req.body);
+    const categories = await prisma.categories.create({
+      data: {
+        ...categoriesData,
+        user: {
+          connect: {
+            id: req.auth.id,
+          },
+        },
+      },
+    });
+    res.json({ msg: "Categories created", categories });
   } catch (error) {
     return res.status(400).json({ errors: error.issues });
   }
-
-  const categories = await prisma.categories.create({
-    data: {
-      ...categoriesData,
-      user: {
-        connect: {
-          id: req.auth.id,
-        },
-      },
-    },
-  });
-
-  res.json({ msg: "Categories created", categories });
 });
 
-//get all categories with prisma
-
+// Récupération de toutes les catégories avec Prisma
 router.get("/categories", auth, async (req, res, next) => {
-  const categories = await prisma.categories.findMany(
-    {
-      where: {
-        user_id: req.auth.id,
-      },
-    }
-  );
-
+  const categories = await prisma.categories.findMany({
+    where: {
+      user_id: req.auth.id,
+    },
+  });
   res.json({ msg: "Categories get", categories });
 });
 
-//get one categories with prisma
-
+// Récupération d'une catégorie avec Prisma
 router.get("/categories/:id", auth, async (req, res, next) => {
   const categories = await prisma.categories.findUnique({
     where: {
-      id: req.params.id,
+      id: parseInt(req.params.id),
     },
   });
-
   res.json({ msg: "Categories get", categories });
 });
 
-//update categories with prisma
-
+// Mise à jour d'une catégorie avec Prisma
 router.patch("/categories/:id", auth, async (req, res, next) => {
   const category_id = parseInt(req.params.id);
-
-  let category = await prisma.categories.findUnique({
+  const category = await prisma.categories.findUnique({
     where: {
       id: category_id,
     },
@@ -89,7 +70,6 @@ router.patch("/categories/:id", auth, async (req, res, next) => {
   if (category.user_id !== req.auth.id) {
     return res.status(404).json({ msg: "Categories not found" });
   }
-
 
   const categories = await prisma.categories.update({
     where: {
@@ -103,11 +83,10 @@ router.patch("/categories/:id", auth, async (req, res, next) => {
   res.json({ msg: "Categories updated", categories });
 });
 
-//delete categories with prisma
-
+// Suppression d'une catégorie avec Prisma
 router.delete("/categories/:id", auth, async (req, res, next) => {
   const category_id = parseInt(req.params.id);
-  let category = await prisma.categories.findUnique({
+  const category = await prisma.categories.findUnique({
     where: {
       id: category_id,
     },
