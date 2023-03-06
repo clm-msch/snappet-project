@@ -1,11 +1,12 @@
 {
   "name": "snappet-project",
   "version": "1.0.0",
-  "description": "",
   "main": "app.js",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon app.js"
+    "dev": "nodemon app.js",
+    "start": "node server.js"
   },
   "repository": {
     "type": "git",
@@ -19,8 +20,19 @@
   "homepage": "https://github.com/clm-msch/snappet-project#readme",
   "dependencies": {
     "@prisma/client": "^4.9.0",
+    "bcrypt": "^5.1.0",
+    "cors": "^2.8.5",
+    "dan": "^0.0.1",
+    "dotenv": "^16.0.3",
+    "ejs": "^3.1.8",
     "express": "^4.18.2",
+    "express-jwt": "^8.3.0",
+    "express-router": "^0.0.1",
+    "http-errors": "^2.0.0",
     "nodemon": "^2.0.20",
-    "prisma": "^4.9.0"
-  }
+    "prisma": "^4.9.0",
+    "zod": "^3.20.2"
+  },
+  "devDependencies": {},
+  "description": ""
 }
